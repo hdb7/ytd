@@ -7,6 +7,15 @@ from pytube import YouTube, Stream
 #TODO:
 # 1. Make progress bar
 
+"""
+USAGE :
+    * To download a song from YouTube 
+      $ python3 ytd.py <yt-song-url>
+    * Default location for downloaded file is in Music directory
+    * You can change the location by giving the folder name
+    * when prompted for folder location
+"""
+
 # HEX-COLORS
 OKBLUE = '\033[94m'
 OKCYAN = '\033[96m'
