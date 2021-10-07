@@ -17,11 +17,12 @@ USAGE :
 """
 
 # HEX-COLORS
-OKBLUE = '\033[94m'
-OKCYAN = '\033[96m'
-OKGREEN = '\033[92m'
+RED    = '\33[91m'
+GREEN  = '\33[32m'
+YELLOW = '\33[93m'
+CYAN = '\033[96m'
 FAIL = '\033[91m'
-ENDC = '\033[0m'
+RST = '\033[0m'  #reset
 
 def download_path():
   home = os.path.expanduser('~')
@@ -38,7 +39,7 @@ def download():
   try:
     yts = YouTube(link)
   except:
-    print(f" {FAIL}ytd: Sorry :( Unable to fetched the content ! {ENDC}")
+    print(f" {FAIL}ytd: Sorry :( Unable to fetched the content ! {RST}")
     print(" Possible reason: \n * your offline \n * invalid url\n\n  Try again.")
     sys.exit()
 
@@ -53,9 +54,9 @@ def download():
   user_input = input("Do you want to install[y/N]:")
   if user_input == "y":
     file_path = download_path()
-    print(f"{OKBLUE} Downloading: {yts.title} {ENDC}")
+    print(f"{RED} Downloading: {yts.title}")
     song_stream.download(file_path)
-    print(f"{OKGREEN} Finished Downloading: {yts.title} {ENDC}")
+    print(f"{GREEN} Finished Downloading: {yts.title}")
   else:
     sys.exit()
 
