@@ -51,7 +51,7 @@ def download():
   print("Size: {} MB".format(size))
 
   #ask user to proceed or not
-  user_input = input("Do you want to install[y/N]:")
+  user_input = input("Do you want to download[y/N]:")
   if user_input == "y":
     file_path = download_path()
     print(f"{RED} Downloading: {yts.title}")
