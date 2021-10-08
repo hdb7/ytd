@@ -24,6 +24,14 @@ CYAN = '\033[96m'
 FAIL = '\033[91m'
 RST = '\033[0m'  #reset
 
+
+def help():
+  print("ytd 1.0, a cli YouTube song downloader")
+  print(" Usage: ")
+  print("   ytd [Option] [Url]")
+  print(" Option: ")
+  print("   -h     display this help")
+
 def download_path():
   home = os.path.expanduser('~')
   default_path = 'Music'   #default folder
@@ -33,11 +41,15 @@ def download_path():
   down_path = os.path.join(home, user_path)
   return down_path
 
-def download():
-  link = sys.argv[1]
-
+def main():
+  arg = sys.argv[1]
+  if arg == "-h":
+    help()
+    sys.exit()
+  else:
+    url = arg
   try:
-    yts = YouTube(link)
+    yts = YouTube(url)
   except:
     print(f" {FAIL}ytd: Sorry :( Unable to fetched the content ! {RST}")
     print(" Possible reason: \n * your offline \n * invalid url\n\n  Try again.")
@@ -60,4 +72,4 @@ def download():
   else:
     sys.exit()
 
-download()
+main()
