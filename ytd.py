@@ -6,6 +6,7 @@ from pytube import YouTube, Stream
 
 #TODO:
 # 1. Make progress bar
+# 2. Support for video download
 
 """
 USAGE :
