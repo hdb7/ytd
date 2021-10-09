@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+# install dependencies
+pip3 install --user pytube
+
+# set up the alias for ytd
+cwd=$(pwd)
+echo "# for ytd.py to work as ytd "
+echo "# you can just run ytd from any directory"
+echo "alias ytd=\"python3 $cwd/ytd.py\"" >> $HOME/.bashrc
+source $HOME/.bashrc
