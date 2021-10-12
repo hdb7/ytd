@@ -3,7 +3,7 @@
 ## Installation 
 This installation guide works only for Linux
 ```
-git clone https://www.bitbucket.org/ytd.git
+git clone https://github.com/hdb7/ytd.git 
 cd ytd
 ./INSTALL
 ```
