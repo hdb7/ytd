@@ -1,7 +1,9 @@
 # YouTube song downloader
 
+import argparse
 import sys, os
 from pytube import YouTube, Stream
+
 #from pytube.cli import on_progress
 
 #TODO:
@@ -25,15 +27,30 @@ CYAN = '\033[96m'
 FAIL = '\033[91m'
 RST = '\033[0m'  #reset
 
+def get_video():
+  pass
 
-def help():
-  print("ytd 1.0, a cli YouTube song downloader")
-  print(" Usage: ")
-  print("   ytd [Option] [Url]")
-  print(" Option: ")
-  print("   -h     display this help")
+def get_audio(yts):
+  print("Song Title: ", yts.title)
+  song_stream = yts.streams.filter(only_audio=True).first()
+  size = round(song_stream.filesize_approx/1000000,3)
+  print("Size: {} MB".format(size))
 
-def download_path():
+  #download audio/song
+  downloader(song_stream, yts.title)
+
+def downloader(strm, name):
+  #ask user to proceed or not
+  user_input = input("Do you want to download[y/N]: ")
+  if user_input == "y":
+    file_path = getpath()
+    print(f"{RED} Downloading: {name}")
+    strm.download(file_path)
+    print(f"{GREEN} Finished Downloading: {name}")
+  else:
+    sys.exit()
+
+def getpath():
   home = os.path.expanduser('~')
   default_path = 'Music'   #default folder
   user_path = input("Enter the directory[default: Music]: ")
@@ -43,34 +60,37 @@ def download_path():
   return down_path
 
 def main():
-  arg = sys.argv[1]
-  if arg == "-h":
-    help()
-    sys.exit()
-  else:
-    url = arg
+  #create parser
+  parser = argparse.ArgumentParser(description='ytd : a cli YouTube song/video downloader')
+  parser.add_argument('-a','--audio',
+                      action="store_true",
+                      help="get the audio file")
+  parser.add_argument('-v','--video',
+                      action='store_true',
+                      help='get the video file')
+  parser.add_argument('--l',
+                      type=str,
+                      action='store',
+                      help='YouTube url')
+  parser.add_argument('--version',
+                      action='version',
+                      version='%(prog)s 1.2')
+  # Parse the argument
+  args = parser.parse_args()
+  url  = args.l
   try:
-    yts = YouTube(url)
+    yt = YouTube(url)
   except:
     print(f" {FAIL}ytd: Sorry :( Unable to fetched the content ! {RST}")
     print(" Possible reason: \n * your offline \n * invalid url\n\n  Try again.")
     sys.exit()
 
-  print("Song Title: ", yts.title)
-  song_stream = yts.streams.filter(only_audio=True).first()
-
-  #global size  #make it accessible
-  size = round(song_stream.filesize_approx/1000000,3)
-  print("Size: {} MB".format(size))
-
-  #ask user to proceed or not
-  user_input = input("Do you want to download[y/N]:")
-  if user_input == "y":
-    file_path = download_path()
-    print(f"{RED} Downloading: {yts.title}")
-    song_stream.download(file_path)
-    print(f"{GREEN} Finished Downloading: {yts.title}")
+  if args.audio:
+    get_audio(yt)
+  elif args.video:
+    get_video(yt)
   else:
+    print("Error: invalid options")
     sys.exit()
 
 main()
