@@ -1,19 +1,17 @@
-# YouTube song downloader
+# YouTube song/video downloader
 
 import argparse
 import sys, os
 from pytube import YouTube, Stream
-
 #from pytube.cli import on_progress
 
 #TODO:
 # 1. Make progress bar
-# 2. Support for video download
 
 """
 USAGE :
-    * To download a song from YouTube 
-      $ python3 ytd.py <yt-song-url>
+    * To download a song/video from YouTube 
+      $ python3 ytd.py [Options] [-l] [yt-song-url]
     * Default location for downloaded file is in Music directory
     * You can change the location by giving the folder name
     * when prompted for folder location
@@ -23,13 +21,28 @@ USAGE :
 RED    = '\33[91m'
 GREEN  = '\33[32m'
 YELLOW = '\33[93m'
-CYAN = '\033[96m'
-FAIL = '\033[91m'
-RST = '\033[0m'  #reset
+CYAN   = '\033[96m'
+FAIL   = '\033[91m'
+RST    = '\033[0m'  #reset
 
-def get_video():
-  pass
-
+def get_video(ytv):
+  print("Video Title: ", ytv.title)
+  # progressive streams have the video and audio in a single file
+  video_stream = ytv.streams.filter(progressive=True,
+                                    file_extension='mp4',
+                                    type='video')
+  # store the available resolutions
+  video_res = []
+  for s in video_stream:
+    video_res.append(s.resolution)
+  video_res = list(set(video_res))
+  print("Available Resolution :", end=" ")
+  for vr in video_res:
+    print(vr,end=", ")
+  user_res = input("Choose the resolution: ")
+  video_to_download = video_stream.filter(res=user_res).first()
+  downloader(video_to_download, ytv.title)
+  
 def get_audio(yts):
   print("Song Title: ", yts.title)
   song_stream = yts.streams.filter(only_audio=True).first()
@@ -59,12 +72,19 @@ def getpath():
   down_path = os.path.join(home, user_path)
   return down_path
 
+def error_msg():
+  print(f" {FAIL}ytd: Error occured !{RST}")
+  print(" Possible reason: ")
+  print("      * Connection is poor")
+  print("      * Invalid URL ")
+  print("--------- Try Again -----------")
+
 def main():
   #create parser
   parser = argparse.ArgumentParser(description='ytd : a cli YouTube song/video downloader')
   parser.add_argument('-a','--audio',
-                      action="store_true",
-                      help="get the audio file")
+                      action='store_true',
+                      help='get the audio file')
   parser.add_argument('-v','--video',
                       action='store_true',
                       help='get the video file')
@@ -81,8 +101,7 @@ def main():
   try:
     yt = YouTube(url)
   except:
-    print(f" {FAIL}ytd: Sorry :( Unable to fetched the content ! {RST}")
-    print(" Possible reason: \n * your offline \n * invalid url\n\n  Try again.")
+    error_msg()
     sys.exit()
 
   if args.audio:
@@ -90,7 +109,7 @@ def main():
   elif args.video:
     get_video(yt)
   else:
-    print("Error: invalid options")
+    print(f"{FAIL}Error: invalid options")
     sys.exit()
 
 main()
