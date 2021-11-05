@@ -7,6 +7,7 @@ from pytube import YouTube, Stream
 
 #TODO:
 # 1. Make progress bar
+# 2. Display the size of video file
 
 """
 USAGE :
