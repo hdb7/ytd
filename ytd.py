@@ -7,7 +7,6 @@ from pytube import YouTube, Stream
 
 #TODO:
 # 1. Make progress bar
-# 2. Display the size of video file
 
 """
 USAGE :
@@ -15,7 +14,7 @@ USAGE :
       $ python3 ytd.py [Options] [-l] [yt-song-url]
     * Default location for downloaded file is in Music directory
     * You can change the location by giving the folder name
-    * when prompted for folder location
+    * when prompted for folder list location
 """
 
 # HEX-COLORS
@@ -37,12 +36,19 @@ def get_video(ytv):
   for s in video_stream:
     video_res.append(s.resolution)
   video_res = list(set(video_res))
-  print("Available Resolution :", end=" ")
+  print("Available Resolution : [ ", end=" ")
   for vr in video_res:
     print(vr,end=", ")
+  print(" ]")
   user_res = input("Choose the resolution: ")
   video_to_download = video_stream.filter(res=user_res).first()
+  video_size = get_video_size(video_to_download)
+  print("Size: {} MB".format(video_size))
   downloader(video_to_download, ytv.title)
+  
+def get_video_size(video_file):
+  v_size = round(video_file.filesize_approx/1000000,3)
+  return v_size
   
 def get_audio(yts):
   print("Song Title: ", yts.title)
@@ -80,7 +86,7 @@ def error_msg():
   print("      * Invalid URL ")
   print("--------- Try Again -----------")
 
-def main():
+def ytd():
   #create parser
   parser = argparse.ArgumentParser(description='ytd : a cli YouTube song/video downloader')
   parser.add_argument('-a','--audio',
@@ -95,7 +101,7 @@ def main():
                       help='YouTube url')
   parser.add_argument('--version',
                       action='version',
-                      version='%(prog)s 1.2')
+                      version='%(prog)s 1.2.1')
   # Parse the argument
   args = parser.parse_args()
   url  = args.l
@@ -113,4 +119,5 @@ def main():
     print(f"{FAIL}Error: invalid options")
     sys.exit()
 
-main()
+# start program
+ytd()
